@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Michaela Boliviana</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffdde1;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ff6f91;
+        }
+        .btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .btn-sim {
+            background-color: #ff6f91;
+            color: #fff;
+        }
+        .btn-nao {
+            background-color: #ddd;
+            color: #333;
+        }
+        .btn-nao:hover {
+            transform: scale(1.05);
+        }
+        .falling-hearts {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .heart, .falling-image {
+            position: absolute;
+            top: -10%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+        .falling-image {
+            width: 250px;
+            height: 250px;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(110vh);
+            }
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            button {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="falling-hearts"></div>
+    <div class="container">
+        <h1>Michaela, quer casar comigo?</h1>
+        <div class="btns">
+            <button class="btn-sim" id="btn-sim" aria-label="Botão Sim">SIM</button>
+            <button class="btn-nao" id="btn-nao" aria-label="Botão Não">NÃO</button>
+        </div>
+    </div>
+
+    <script>
+        const btnNao = document.getElementById("btn-nao");
+        const btnSim = document.getElementById("btn-sim");
+        const container = document.querySelector(".falling-hearts");
+        let btnNaoPosition = 0;
+        let alreadyClicked = false;
+
+        btnSim.style.position = 'static';
+        btnNao.style.position = 'static';
+
+        btnNao.addEventListener('mouseover', () => {
+            moveButton();
+            btnNaoPosition++;
+            if (btnNaoPosition > 3) {
+                btnNao.style.transition = 'all 0.1s ease';
+            }
+            if (btnNaoPosition > 5) {
+                btnNao.style.transition = 'all 0.05s ease';
+            }
+        });
+
+        btnNao.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
+
+        function moveButton() {
+            const maxX = Math.max(0, window.innerWidth - btnNao.offsetWidth - 20);
+            const maxY = Math.max(0, window.innerHeight - btnNao.offsetHeight - 20);
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+            btnNao.style.position = 'absolute';
+            btnNao.style.left = `${newX}px`;
+            btnNao.style.top = `${newY}px`;
+        }
+
+        btnSim.addEventListener("click", () => {
+            if (alreadyClicked) return;
+            alreadyClicked = true;
+
+            btnNao.remove();
+            for (let i = 0; i < 50; i++) {
+                createHeart();
+                createImage();
+            }
+            setInterval(createHeart, 300);
+            setInterval(createImage, 400);
+
+            document.querySelector('h1').textContent = 'Te amo boliviana. Coríntios 13:4-7! ❤️';
+        });
+
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("heart");
+            heart.setAttribute("aria-hidden", "true");
+            heart.innerHTML = randomEmoji();
+            heart.style.left = `${Math.random() * 100}vw`;
+            heart.style.fontSize = `${Math.random() * 2 + 1}rem`;
+            heart.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            container.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        function createImage() {
+            const image = document.createElement("img");
+            image.classList.add("falling-image");
+            image.setAttribute("aria-hidden", "true");
+            image.src = "mica.png";
+            image.alt = "mica amor da minha vida";
+            image.style.left = `${Math.random() * 100}vw`;
+            image.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            container.appendChild(image);
+
+            setTimeout(() => {
+                image.remove();
+            }, 5000);
+        }
+
+        function randomEmoji() {
+            const emojis = ["❤️", "💕", "💖", "💗", "💘"];
+            return emojis[Math.floor(Math.random() * emojis.length)];
+        }
+    </script>
+</body>
+</html>
